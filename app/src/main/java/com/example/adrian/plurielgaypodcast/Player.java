@@ -73,6 +73,7 @@ public class Player extends AsyncTask<String, Void, Boolean> {
           //  progress.cancel();
         //}
         Log.d("Prepared", "//" + result);
+        Constants.setMediaLength(mediaPlayer.getDuration());
 
         mediaPlayer.start();
 
@@ -90,9 +91,5 @@ public class Player extends AsyncTask<String, Void, Boolean> {
 
     }
 
-    protected int getDuration() {
-        mediaLength = mediaPlayer.getDuration();
-        Log.i(LOG_TAG, "Duration" + Integer.toString(mediaLength));
-        return mediaLength;
-    }
+
 }

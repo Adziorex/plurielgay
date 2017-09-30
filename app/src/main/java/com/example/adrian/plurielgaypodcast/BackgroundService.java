@@ -1,6 +1,7 @@
 package com.example.adrian.plurielgaypodcast;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.SeekBar;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +33,59 @@ public class BackgroundService extends Service {
 
     private static final String LOG_TAG = "BackgroundService";
     Player player;
+    SeekBar progressBar;
+    String streamAdress;
+    String auditionTitle;
+    PendingIntent pendingIntent;
+    PendingIntent ppreviousIntent;
+    PendingIntent pplayIntent;
+    Bitmap icon = null;
+    PendingIntent pnextIntent;
+    PendingIntent ppauseIntent;
+    Notification notification;
 
+    public void createPlayingNotification() {
+        icon = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher);
+        notification = new NotificationCompat.Builder(this)
+                .setContentTitle("Pluriel Gay Podcast")
+                .setTicker("Pluriel Gay Podcast")
+                .setContentText(auditionTitle)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(
+                        Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .addAction(android.R.drawable.ic_media_previous,
+                        "Previous", ppreviousIntent)
+                .addAction(android.R.drawable.ic_media_pause, "Pause",
+                        ppauseIntent)
+                .addAction(android.R.drawable.ic_media_next, "Next",
+                        pnextIntent).build();
+
+
+    }
+    public void createPausedNotifcation() {
+        icon = BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher);
+        notification = new NotificationCompat.Builder(this)
+                .setContentTitle("Pluriel Gay Podcast")
+                .setTicker("Pluriel Gay Podcast")
+                .setContentText(auditionTitle)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(
+                        Bitmap.createScaledBitmap(icon, 128, 128, false))
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .addAction(android.R.drawable.ic_media_previous,
+                        "Previous", ppreviousIntent)
+                .addAction(android.R.drawable.ic_media_play, "Play",
+                        pplayIntent)
+                .addAction(android.R.drawable.ic_media_next, "Next",
+                        pnextIntent).build();
+
+
+    }
 
 
     @Override
@@ -41,62 +95,56 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             Log.i(LOG_TAG, "Received Start Foreground Intent ");
             Log.i(LOG_TAG, intent.getStringExtra("URL"));
-            String streamAdress = intent.getStringExtra("URL");
-            String auditionTitle = intent.getStringExtra("Title");
+            streamAdress = intent.getStringExtra("URL");
+            auditionTitle = intent.getStringExtra("Title");
             player = (Player) new Player().execute(streamAdress);
-
-
 
 
             Intent notificationIntent = new Intent(this, Listen.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+            pendingIntent = PendingIntent.getActivity(this, 0,
                     notificationIntent, 0);
 
 
             Intent previousIntent = new Intent(this, BackgroundService.class);
             previousIntent.setAction(Constants.ACTION.PREV_ACTION);
-            PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
+            ppreviousIntent = PendingIntent.getService(this, 0,
                     previousIntent, 0);
 
             Intent playIntent = new Intent(this, BackgroundService.class);
             playIntent.setAction(Constants.ACTION.PLAY_ACTION);
-            PendingIntent pplayIntent = PendingIntent.getService(this, 0,
+            pplayIntent = PendingIntent.getService(this, 0,
                     playIntent, 0);
 
             Intent nextIntent = new Intent(this, BackgroundService.class);
             nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
-            PendingIntent pnextIntent = PendingIntent.getService(this, 0,
+            pnextIntent = PendingIntent.getService(this, 0,
                     nextIntent, 0);
 
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                    R.mipmap.ic_launcher);
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setContentTitle("Pluriel Gay Podcast")
-                    .setTicker("Pluriel Gay Podcast")
-                    .setContentText(auditionTitle)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon(
-                            Bitmap.createScaledBitmap(icon, 128, 128, false))
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .addAction(android.R.drawable.ic_media_previous,
-                            "Previous", ppreviousIntent)
-                    .addAction(android.R.drawable.ic_media_play, "Play",
-                            pplayIntent)
-                    .addAction(android.R.drawable.ic_media_next, "Next",
-                            pnextIntent).build();
+            Intent pauseIntent = new Intent(this, BackgroundService.class);
+            pauseIntent.setAction(Constants.ACTION.PAUSE_ACTION);
+            ppauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+
+            createPlayingNotification();
+
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,
                     notification);
         } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
             Log.i(LOG_TAG, "Clicked Previous");
-        } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
-            Log.i(LOG_TAG, "Clicked Play");
+        } else if (intent.getAction().equals(Constants.ACTION.PAUSE_ACTION)) {
+            Log.i(LOG_TAG, "Clicked Pause");
+            player.mediaPlayer.pause();
+            createPausedNotifcation();
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+
+
         } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
             Log.i(LOG_TAG, "Clicked Next");
         } else if (intent.getAction().equals(
@@ -105,6 +153,12 @@ public class BackgroundService extends Service {
             player.mediaPlayer.stop();
             stopForeground(true);
             stopSelf();
+        } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
+            player.mediaPlayer.start();
+            createPlayingNotification();
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+
         }
         return START_STICKY;
     }
@@ -122,4 +176,6 @@ public class BackgroundService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+
 }

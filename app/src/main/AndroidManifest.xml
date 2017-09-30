@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppThemeNoTitleBar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +20,10 @@
         </activity>
 
         <activity android:name=".Listen"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ff14e579c8cb1dd932ea1f9dfaa74d7459f15076"
+            />
         <service android:name=".BackgroundService">
         </service>
     </application>
