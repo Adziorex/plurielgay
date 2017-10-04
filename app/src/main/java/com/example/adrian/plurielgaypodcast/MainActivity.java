@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: 31/08/2017  downloading the mp3
         // TODO: 31/08/2017 instead of loading all just add nes items on update
         // TODO: 31/08/2017 keep track of listened tracks and progress in each
-        // TODO: 30/09/2017 add options next previous to switch to new audition 
+        // TODO: 30/09/2017 add options next previous to switch to new audition
 
         ListView listEmissionsView = (ListView) findViewById(R.id.ListEmissions);
         sharedPreferences = this.getSharedPreferences("com.example.adrian.plurielgaypodcast", Context.MODE_PRIVATE);
@@ -140,12 +140,11 @@ public class MainActivity extends AppCompatActivity {
         listEmissionsView.setAdapter(arrayAdapter);
 
 
-
-
         listEmissionsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, Listen.class);
+                intent.putExtra("position", position);
                 intent.putExtra("URL", listMP3.get(position));
                 intent.putExtra("auditionTitle", listEmissions.get(position));
                 intent.putExtra("auditionDesc", listDescription.get(position));

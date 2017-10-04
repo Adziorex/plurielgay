@@ -39,6 +39,9 @@ public class Listen extends AppCompatActivity {
         final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
         //descriptionView.setMovementMethod(new ScrollingMovementMethod());
         // TODO: 02/09/2017 make the description scrollable 
+        // TODO: 04/10/2017 make the icons show on the notification 
+        // TODO: 04/10/2017 when clicked on notification it should show current audition page with stop button 
+         
 
        buttonPlay = (Button) findViewById(R.id.playButton);
 
