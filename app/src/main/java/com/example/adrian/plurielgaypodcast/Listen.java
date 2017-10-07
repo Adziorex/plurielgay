@@ -25,31 +25,33 @@ public class Listen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen);
+        final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
         Intent intent = getIntent();
-        final String URL = intent.getStringExtra("URL");
-        final String title = intent.getStringExtra("auditionTitle");
-        String description = intent.getStringExtra("auditionDesc");
+        final String URL =  Constants.getListMP3().get(Constants.getPositionPlaying());   //intent.getStringExtra("URL");
+        final String title = Constants.getListEmissions().get(Constants.getPositionPlaying());;
+        String description = Constants.getlistDescription().get(Constants.getPositionPlaying());;
         TextView auditionTitle = (TextView) findViewById(R.id.AuditionTitle);
         auditionTitle.setText(title);
+        //set the right button
+        if (Constants.getIsPlaying()==1) {
+            constraintLayout.setBackgroundResource(R.drawable.background_stop);
+        } else {
+            constraintLayout.setBackgroundResource(R.drawable.background_play2);
+        }
 
 
         TextView descriptionView = (TextView) findViewById(R.id.textViewDescription);
         descriptionView.setText(description);
-        final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
+
         //descriptionView.setMovementMethod(new ScrollingMovementMethod());
         // TODO: 02/09/2017 make the description scrollable 
         // TODO: 04/10/2017 make the icons show on the notification 
-        // TODO: 04/10/2017 when clicked on notification it should show current audition page with stop button 
-         
+
 
        buttonPlay = (Button) findViewById(R.id.playButton);
 
-
-
-
-
-        buttonPlay.setOnClickListener(new View.OnClickListener() {
+       buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Constants.getIsPlaying()==-1) {

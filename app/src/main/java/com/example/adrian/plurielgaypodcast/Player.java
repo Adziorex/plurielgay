@@ -20,6 +20,7 @@ public class Player extends AsyncTask<String, Void, Boolean> {
     MediaPlayer mediaPlayer;
     int mediaLength;
     //ProgressDialog progress;
+    // TODO: 07/10/2017 buffer more data 
 
 
 

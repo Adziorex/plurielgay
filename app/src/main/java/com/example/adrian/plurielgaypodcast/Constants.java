@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class Constants {
     private static int mediaLength = 0;
     private static int isPlaying = -1;
+    private static int positionPlaying = 0;
+    //store downloaded lists
     private static ArrayList<String> listEmissions = new ArrayList<>();
     private static ArrayList<String> listMP3 = new ArrayList<>();
     private static ArrayList<String> listDescription = new ArrayList<>();
@@ -24,6 +26,16 @@ public class Constants {
     public static ArrayList<String> getlistDescription() {
         return listDescription;
     }
+    public static void setListEmissions(ArrayList<String> list) {
+        listEmissions = list;
+    }
+    public static void setListMP3(ArrayList<String> list) {
+        listMP3 =list;
+    }
+    public static void setlistDescription(ArrayList<String> list) {
+        listDescription =list;
+    }
+
 
 
     public static int getIsPlaying() {
@@ -60,6 +72,13 @@ public class Constants {
         Log.i("Constants", "MediaLength send to activity");
         return mediaLength;
 
+    }
+
+    public static  void setPositionPlaying (int position) {
+        positionPlaying = position;
+    }
+    public static  int getPositionPlaying () {
+        return positionPlaying;
     }
 
 

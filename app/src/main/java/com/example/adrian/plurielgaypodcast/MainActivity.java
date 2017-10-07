@@ -129,8 +129,11 @@ public class MainActivity extends AppCompatActivity {
         //populateListEmissions();
         try {
             listEmissions = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("listEmissions", ObjectSerializer.serialize(new ArrayList<String>())));
+            Constants.setListEmissions(listEmissions);
             listDescription = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("listDescription", ObjectSerializer.serialize(new ArrayList<String>())));
+            Constants.setlistDescription(listDescription);
             listMP3 = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("listMP3", ObjectSerializer.serialize(new ArrayList<String>())));
+            Constants.setListMP3(listMP3);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -144,10 +147,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, Listen.class);
-                intent.putExtra("position", position);
-                intent.putExtra("URL", listMP3.get(position));
-                intent.putExtra("auditionTitle", listEmissions.get(position));
-                intent.putExtra("auditionDesc", listDescription.get(position));
+                Constants.setPositionPlaying(position);
+                //intent.putExtra("position", position);
+                //intent.putExtra("URL", listMP3.get(position));
+                //intent.putExtra("auditionTitle", listEmissions.get(position));
+                //intent.putExtra("auditionDesc", listDescription.get(position));
                 startActivity(intent);
             }
         });
